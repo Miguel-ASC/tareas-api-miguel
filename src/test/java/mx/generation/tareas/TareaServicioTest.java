@@ -49,12 +49,22 @@ class TareaServicioTest {
     }
 
     @Test
-    void listarPorPrioridadMinimaBajaDevuelveMediaYAlta() {
+    void listarPorPrioridadMinimaBajaDevuelveTodas() {
         servicio.crear("baja", "", Prioridad.BAJA, null);
         servicio.crear("media", "", Prioridad.MEDIA, null);
         servicio.crear("alta", "", Prioridad.ALTA, null);
         List<Tarea> resultado = servicio.listarPorPrioridadMinima(Prioridad.BAJA);
-        assertEquals(2, resultado.size());
+        assertEquals(3, resultado.size());
+    }
+
+    @Test
+    void listarPorPrioridadMinimaAltaDevuelveSoloAlta() {
+        servicio.crear("baja", "", Prioridad.BAJA, null);
+        servicio.crear("media", "", Prioridad.MEDIA, null);
+        servicio.crear("alta", "", Prioridad.ALTA, null);
+        List<Tarea> resultado = servicio.listarPorPrioridadMinima(Prioridad.ALTA);
+        assertEquals(1, resultado.size());
+        assertEquals("alta", resultado.get(0).getTitulo());
     }
 
     @Test
