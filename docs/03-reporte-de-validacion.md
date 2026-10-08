@@ -52,6 +52,16 @@ grep -r "estaVencida" src/
 
 - **Pruebas iniciales**: 13 ejecutadas, 0 fallos, 1 omitida
 - **Pruebas finales**: 19 ejecutadas, 0 fallos, 0 omitidas
-- **Nuevas pruebas añadidas**: 7
+- **Nuevas pruebas añadidas**: 6
 - **Defectos corregidos**: 5
 - **Commits realizados**: 5
+
+## Mi lista de verificación antes de aceptar código de una IA
+
+1. **Compilar**: Verificar que `mvn compile` pase sin errores
+2. **Tests existentes verdes**: Ejecutar `mvn test` para confirmar que no se rompió nada
+3. **Prueba nueva roja primero**: Si la IA añade prueba, verificar que falle por la razón esperada antes de aplicar el fix
+4. **Diff solo objetivo**: Revisar cambios con `git diff` - deben ser mínimos y enfocados al problema
+5. **Contrato Javadoc/README**: Comparar documentación vs implementación para detectar inconsistencias
+6. **Comprobar referencias**: Verificar que métodos/archivos citados existan realmente (no alucinados)
+7. **Medir límites con wc -l**: Cuando hay restricciones de tamaño, verificar con herramientas reales (regla aprendida hoy)
