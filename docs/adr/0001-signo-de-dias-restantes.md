@@ -2,42 +2,20 @@
 
 ## Contexto
 
-El método `TareaServicio.diasRestantes(int id, LocalDate hoy)` calcula cuántos días faltan
-para la fecha límite de una tarea. Necesitábamos definir la convención del signo para
-representar tareas futuras, presentes y vencidas, así como el tratamiento de tareas sin fecha.
+`TareaServicio.diasRestantes(int id, LocalDate hoy)` calcula días hasta la fecha límite. Necesitábamos definir la convención del signo para tareas futuras, presentes, vencidas y sin fecha.
 
 ## Decisión
 
-Adoptamos la convención de **signo natural temporal**:
+Signo natural temporal: **Positivo** (futuro, ej: +5), **Cero** (hoy), **Negativo** (pasado, ej: -3), **Long.MAX_VALUE** (sin fecha). Implementación: `ChronoUnit.DAYS.between(hoy, fechaLimite)`
 
-- **Positivo (+)**: Días en el futuro (ej: vence en 5 días → `+5`)
-- **Cero (0)**: Vence hoy
-- **Negativo (-)**: Días en el pasado (ej: venció hace 3 días → `-3`)
-- **Long.MAX_VALUE**: Tareas sin fecha límite (sin vencimiento)
+## Alternativas
 
-Implementación: `ChronoUnit.DAYS.between(hoy, fechaLimite)`
+**Signo invertido** (positivo=pasado, negativo=futuro): Contraintuitivo ("faltan -5 días"), dificulta ordenamiento.
 
-## Alternativas consideradas
+**Optional<Long>**: Hace explícito el caso sin fecha, pero complica la API y pierde ordenamiento numérico.
 
-**1. Signo invertido** (positivo = pasado, negativo = futuro)
-- ❌ Contraintuitivo: "faltan -5 días" es confuso
-- ❌ Dificulta ordenamiento natural
-
-**2. Optional<Long>**
-- ✅ Hace explícito el caso sin fecha
-- ❌ Complica la API para el caso común
-- ❌ Pierde la capacidad de ordenar numéricamente
-
-**3. Lanzar excepción si no hay fecha**
-- ❌ Convierte un caso válido de negocio en error
-- ❌ Fuerza try-catch en código cliente
+**Lanzar excepción si no hay fecha**: Convierte caso válido en error, fuerza try-catch innecesario.
 
 ## Consecuencias
 
-**Positivas:**
-- Ordenamiento natural: `diasRestantes < 0` identifica vencidas
-- Fácil comparación: `diasRestantes > 7` son las de más de una semana
-- Consistente con lenguaje natural: "faltan 5 días"
-
-**Negativas:**
-- Long.MAX_VALUE es un valor mágico (documentado en Javadoc)
+Ordenamiento natural (`< 0` = vencidas), fácil comparación (`> 7` = más de semana), consistente con lenguaje natural. Long.MAX_VALUE es valor mágico (documentado en Javadoc).
