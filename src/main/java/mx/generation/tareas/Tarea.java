@@ -16,7 +16,9 @@ public class Tarea {
     private boolean completada;
 
     public Tarea(String titulo, String descripcion, Prioridad prioridad, LocalDate fechaLimite) {
-        // TODO: validar que el título no venga vacío ni en blanco (hoy se acepta "")
+        if (titulo == null || titulo.isBlank()) {
+            throw new IllegalArgumentException("El título no puede ser null, vacío o en blanco");
+        }
         this.titulo = titulo;
         this.descripcion = descripcion == null ? "" : descripcion;
         this.prioridad = Objects.requireNonNull(prioridad, "prioridad");

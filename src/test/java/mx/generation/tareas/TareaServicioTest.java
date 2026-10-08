@@ -2,6 +2,7 @@ package mx.generation.tareas;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
@@ -36,7 +37,10 @@ class TareaServicioTest {
         assertFalse(servicio.listarPendientes().contains(t));
     }
 
-    // TODO: falta probar que completar(999) lanza TareaNoEncontradaException
+    @Test
+    void completarConIdInexistenteLanzaExcepcion() {
+        assertThrows(TareaNoEncontradaException.class, () -> servicio.completar(999));
+    }
 
     @Test
     void listarPendientesExcluyeCompletadas() {
@@ -49,19 +53,36 @@ class TareaServicioTest {
     }
 
     @Test
-    void listarPorPrioridadMinimaBajaDevuelveMediaYAlta() {
+    void listarPorPrioridadMinimaBajaDevuelveTodas() {
         servicio.crear("baja", "", Prioridad.BAJA, null);
         servicio.crear("media", "", Prioridad.MEDIA, null);
         servicio.crear("alta", "", Prioridad.ALTA, null);
         List<Tarea> resultado = servicio.listarPorPrioridadMinima(Prioridad.BAJA);
-        assertEquals(2, resultado.size());
+        assertEquals(3, resultado.size());
+    }
+
+    @Test
+    void listarPorPrioridadMinimaAltaDevuelveSoloAlta() {
+        servicio.crear("baja", "", Prioridad.BAJA, null);
+        servicio.crear("media", "", Prioridad.MEDIA, null);
+        servicio.crear("alta", "", Prioridad.ALTA, null);
+        List<Tarea> resultado = servicio.listarPorPrioridadMinima(Prioridad.ALTA);
+        assertEquals(1, resultado.size());
+        assertEquals("alta", resultado.get(0).getTitulo());
     }
 
     @Test
     void diasRestantesDeUnaTareaFutura() {
         Tarea t = servicio.crear("Entrega", "", Prioridad.ALTA, HOY.plusDays(3));
         // Vence en 3 días
-        assertEquals(-3, servicio.diasRestantes(t.getId(), HOY));
+        assertEquals(3, servicio.diasRestantes(t.getId(), HOY));
+    }
+
+    @Test
+    void diasRestantesDeUnaTareaVencida() {
+        Tarea t = servicio.crear("Atrasada", "", Prioridad.ALTA, HOY.minusDays(2));
+        // Venció hace 2 días
+        assertEquals(-2, servicio.diasRestantes(t.getId(), HOY));
     }
 
     @Test

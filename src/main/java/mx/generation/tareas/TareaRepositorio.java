@@ -3,6 +3,7 @@ package mx.generation.tareas;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -40,8 +41,9 @@ public class TareaRepositorio {
      */
     public List<Tarea> buscarPorTitulo(String texto) {
         List<Tarea> resultado = new ArrayList<>();
+        String textoBuscado = texto.toLowerCase(Locale.ROOT);
         for (Tarea t : tareas.values()) {
-            if (t.getTitulo().contains(texto)) {
+            if (t.getTitulo().toLowerCase(Locale.ROOT).contains(textoBuscado)) {
                 resultado.add(t);
             }
         }

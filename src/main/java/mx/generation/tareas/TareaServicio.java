@@ -22,7 +22,7 @@ public class TareaServicio {
 
     /** Marca la tarea como completada. Si el id no existe, lanza TareaNoEncontradaException. */
     public Tarea completar(int id) {
-        Tarea tarea = repositorio.buscar(id);
+        Tarea tarea = obtener(id);
         tarea.marcarCompletada();
         return tarea;
     }
@@ -48,7 +48,7 @@ public class TareaServicio {
     public List<Tarea> listarPorPrioridadMinima(Prioridad minima) {
         List<Tarea> resultado = new ArrayList<>();
         for (Tarea t : listarPendientes()) {
-            if (t.getPrioridad().ordinal() > minima.ordinal()) {
+            if (t.getPrioridad().ordinal() >= minima.ordinal()) {
                 resultado.add(t);
             }
         }
@@ -64,7 +64,7 @@ public class TareaServicio {
         if (tarea.getFechaLimite() == null) {
             return Long.MAX_VALUE;
         }
-        return ChronoUnit.DAYS.between(tarea.getFechaLimite(), hoy);
+        return ChronoUnit.DAYS.between(hoy, tarea.getFechaLimite());
     }
 
     /**
