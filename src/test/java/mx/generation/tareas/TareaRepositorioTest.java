@@ -30,7 +30,6 @@ class TareaRepositorioTest {
         assertEquals(1, repo.buscarPorTitulo("informe").size());
     }
 
-    @Disabled("TODO: falla, revisar después")
     @Test
     void buscarPorTituloIgnoraMayusculas() {
         TareaRepositorio repo = new TareaRepositorio();
